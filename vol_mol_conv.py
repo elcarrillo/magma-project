@@ -1,35 +1,34 @@
-#vol_mol_conv
-import math 
-print("use 5.5  for rhyolite at 200 Mpa")
-m_i    = float(input('enter wt% of water: '))           ## wt% of h20
-m_j    = [5.5,73.49,.18,13.55,0.36,.976,.5,1.43,3.36]   ## wt% of individual compunds in misture
-M_j    = [18, 46, 113, 74,100,42,28,36,38]              ## molar mass of each compund in g/cm^3
-rho_i  = [.40,2.65,4.23,3.95,5.24,5.74,3.58,3.34,2.27] ## density of each compund
-#density of water is for when its bubble form at 200MPa
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-mixture =['h20', 'sio2','tio2','al2o3','fe2o3','feo','mgo','cao','na2o']
- 
-# volume % calc
-### get v total first then use to get individual vol%
+# Author       : Edgar Carrillo
+# Created      : 2022-02-16
+# Last Modified: 2024-07-01
+# Affiliation  : Vanderbilt University
 
-v_i = []
-for i in range(len(rho_i)):
-	val = m_j[i]/rho_i[i]
-	v_i.append(val)
+"""
+Calculate the volume percentage and molar percentage of water in a mixture of rhyolite at 200 MPa.
+"""
 
+import math
+
+# constants
+mixture = ['H2O', 'SiO2', 'TiO2', 'Al2O3', 'Fe2O3', 'FeO', 'MgO', 'CaO', 'Na2O']
+m_j = [5.5, 73.49, 0.18, 13.55, 0.36, 0.976, 0.5, 1.43, 3.36]  # wt% of individual compounds in mixture
+M_j = [18, 46, 113, 74, 100, 42, 28, 36, 38]                   # molar mass of each compound in g/mol
+rho_i = [0.40, 2.65, 4.23, 3.95, 5.24, 5.74, 3.58, 3.34, 2.27] # density of each compound in g/cm^3
+
+# input
+print("Use 5.5 for rhyolite at 200 MPa")
+m_i = float(input('Enter wt% of water: '))  # wt% of H2O
+
+# volume % Calculation
+v_i = [m_j[i] / rho_i[i] for i in range(len(rho_i))]
 v_total = sum(v_i)
-vol_perc = (m_i/v_total)*100
-print("vol% = ", vol_perc)
+vol_perc = (m_i / v_total) * 100
+print(f"Volume % = {vol_perc:.2f}")
 
-#molar fraction = wt%/molar mass/ (sum m_j/M_j)
-
-frac_val = []
-for i in range(len(m_j)):
-	val = m_j[i]/M_j[i]
-	frac_val.append(val)
-
-
-mol_fract_water = (m_i/M_j[0])/sum(frac_val)
-
-print("mol% = ", mol_fract_water*100)
-
+# molar Fraction Calculation
+frac_val = [m_j[i] / M_j[i] for i in range(len(m_j))]
+mol_fract_water = (m_i / M_j[0]) / sum(frac_val)
+print(f"Molar % = {mol_fract_water * 100:.2f}")
