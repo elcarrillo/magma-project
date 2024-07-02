@@ -1,66 +1,71 @@
-## pressure vs volume
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-import math
+# Author       : Edgar Carrillo
+# Created      : 2022-02-14
+# Last Modified: 2024-07-01
+# Affiliation  : Fisk University, Vanderbilt University
+
+'''
+Pressure vs Volume
+'''
+
 import numpy as np
 import matplotlib.pyplot as plt
 
+params = {
+    'legend.title_fontsize': 'xx-small',
+    'axes.labelsize': 16,
+    'font.size': 16,
+    'legend.fontsize': 8,
+    'xtick.labelsize': 12,
+    'ytick.labelsize': 12,
+    'font.family': 'serif',
+    'xtick.direction': 'in',
+    'ytick.direction': 'in',
+    'xtick.minor.visible': True,
+    'ytick.minor.visible': True,
+    'xtick.top': True,
+    'ytick.right': True,
+    'figure.autolayout': True
+}
+plt.rcParams.update(params)
 
-### parameters
-R_gas  = 8.31445    ## ideal gas constant m^3*Pa*k
-T_rhy  = 1000       ## rhyolite temperature, K
-m_a    = 100        ## assumption for mass 
-p_init = 200000000  ## init pressures in pascals
-p_lim  = 100000     ## atmospheric pressure
-p_half = p_init/2
-p_10   = p_init/10
-at_wt  = 18         ## atomic weight of H20, grams 
-n_val  = m_a/at_wt
+# parameters
+R_gas = 8.31445       # Ideal gas constant m^3*Pa*K
+T_rhy = 1000          # Rhyolite temperature, K
+m_a = 100             # Assumption for mass 
+p_init = 200000000    # Initial pressure in pascals
+p_lim = 100000        # Atmospheric pressure
+p_factors = [1, 0.5, 0.1]  # Pressure reduction factors
+at_wt = 18            # Atomic weight of H2O, grams 
+n_val = m_a / at_wt
 
-#volume as a function of pressure using ideal gas law
+# volume as a function of pressure using the ideal gas law
 def ideal_gas(p):
-	vol =  (n_val*R_gas*T_rhy)/p  
-	return vol
+    return (n_val * R_gas * T_rhy) / p
 
-# create list of pressure values from 2e8 pa to 1e5 pa(1 atm)
-p_max      = 100
-p_mag_atm  = list(np.linspace(p_lim, p_init, p_max))
-p_mag_half = list(np.linspace(p_half, p_init, p_max))
-p_mag_10   = list(np.linspace(p_10, p_init, p_max))
-#biggest range
-vol_change_atm = []
-for i in p_mag_atm:
-	v_val = ideal_gas(i)
-	vol_change_atm.append(v_val)
-#pressure reduced by half, 100MPa
-vol_change_half = []
-for i in p_mag_half:
-	v_val = ideal_gas(i)
-	vol_change_half.append(v_val)
-#pressure reduced 10 fold, 2e7
-vol_change_10 = []
-for i in p_mag_10:
-	v_val = ideal_gas(i)
-	vol_change_10.append(v_val)
+## create list of pressure values for each factor
+p_max = 100
+pressure_ranges = [np.linspace(p_lim, p_init * factor, p_max) for factor in p_factors]
 
+# Calculate volume changes for each pressure range
+volume_changes = [[ideal_gas(p) for p in pressure_range] for pressure_range in pressure_ranges]
 
-#plot p vs v
-fig, ax = plt.subplots(1,3)
+### plot p vs v
+fig, ax = plt.subplots(figsize=[8, 6])
 
-ax[0].scatter(vol_change_atm, p_mag_atm)
-ax[0].set_xlabel("volume(m^3)")
-ax[0].set_ylabel("pressure(Pa)")
-ax[1].scatter(vol_change_half, p_mag_half)
-ax[1].set_xlabel("volume(m^3)")
-ax[1].set_ylabel("pressure(Pa)")
-ax[2].scatter(vol_change_10, p_mag_10)
-ax[2].set_xlabel("volume(m^3)")
-ax[2].set_ylabel("pressure(Pa)")
+labels = ['Initial Pressure (200 MPa)', 'Half Initial Pressure (100 MPa)', 'One-Tenth Initial Pressure (20 MPa)']
+colors = ['blue', 'green', 'red']
 
+for i in range(3):
+    ax.scatter(volume_changes[i], pressure_ranges[i], label=labels[i], color=colors[i])
+    #ax.plot(volume_changes[i], pressure_ranges[i], color='black')
 
-plt.suptitle("Volume as a function of pressure", fontsize= 9)
+ax.set_xlabel(r"Volume [m$^3$]")
+ax.set_ylabel("Pressure [Pa]")
+ax.grid()
+ax.legend()
+
 fig.tight_layout()
-fig.set_figwidth(10)
 plt.show()
-
-#print(p_mag_var)
-#print(vol_change)

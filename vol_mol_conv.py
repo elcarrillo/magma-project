@@ -4,7 +4,7 @@
 # Author       : Edgar Carrillo
 # Created      : 2022-02-16
 # Last Modified: 2024-07-01
-# Affiliation  : Vanderbilt University
+# Affiliation  : Fisk University, Vanderbilt University
 
 """
 Calculate the volume percentage and molar percentage of water in a mixture of rhyolite at 200 MPa.
